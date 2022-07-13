@@ -131,3 +131,26 @@ def full_registration():
                 "image_observation_directional": _image_directional[directional],
             },
         )
+
+from rware.custom_layouts import custom_layouts
+_perms = itertools.product(["cs", "cl"], _difficulty, range(1, 20),)
+
+for layout, diff, agents in _perms:
+    # normal tasks
+    gym.register(
+        id=f"rware-{layout}-{agents}ag{diff}-v1",
+        entry_point="rware.warehouse:Warehouse",
+        kwargs={
+            "column_height": 0,
+            "shelf_rows": 0 ,
+            "shelf_columns": 0,
+            "layout": custom_layouts[layout],
+            "n_agents": agents,
+            "msg_bits": 0,
+            "sensor_range": 1,
+            "request_queue_size": int(agents * _difficulty[diff]),
+            "max_inactivity_steps": None,
+            "max_steps": 500,
+            "reward_type": RewardType.INDIVIDUAL,
+        },
+    )
